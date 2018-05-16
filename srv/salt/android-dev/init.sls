@@ -7,6 +7,7 @@ apps_install:
       - openjdk-8-jdk
       - git
       - geany
+      - unzip
 
 {% if not salt['pkg.version']('nodejs').startswith('8.') %}
 
@@ -41,6 +42,16 @@ extract_android_sdk:
     - group: {{ user }}
 
 configure_android_sdk:
+  cmd.run:
+    - user: {{ user }}
+    - group: {{ user }}
+    - cwd: /home/{{ user }}/android-sdk/tools/bin
+    - name: |
+        yes | ./sdkmanager --update
+        ./sdkmanager "platform-tools" "platforms;android-27" "patcher;v4" "emulator" "build-tools;27.0.3" "extras;android;m2repository"
+        yes | ./sdkmanager --licenses
+
+configure_android_sdk2:
   cmd.run:
     - user: {{ user }}
     - group: {{ user }}
